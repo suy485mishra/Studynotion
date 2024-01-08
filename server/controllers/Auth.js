@@ -1,11 +1,11 @@
 const User = require("../models/User");
 const OTP = require("../models/OTP");
-const Profile = require("../models/Profile");
+// const Profile = require("../models/Profile");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const cookie = require("cookie-parser");
 require("dotenv").config();
+
 //otp
 exports.sendOTP = async (req, res) => {
   try {
@@ -184,7 +184,7 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email }).populate("additionalDetails");
     if (!user) {
       return res.status(401).json({
-        successs: true,
+        successs: false,
         message: "User is not Registered, Signup please",
       });
     }
@@ -206,14 +206,12 @@ exports.login = async (req, res) => {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         httpOnly: true,
       };
-      res.cookie("token", token, options).
-        status(200).json({
-          success: true,
-          token,
-          user,
-          message: "Logged in successfully",
-        });
-
+      res.cookie("token", token, options).status(200).json({
+        success: true,
+        token,
+        user,
+        message: "Logged in successfully",
+      });
     }
     //password doesn't match
     else {
@@ -221,23 +219,15 @@ exports.login = async (req, res) => {
         successs: false,
         message: "Incorrect Password!",
       });
-
     }
-
-  } 
-  catch (error) {
+  } catch (error) {
     console.log(error);
     return res.status(500).json({
       successs: false,
       message: "Login Failure,please try again",
     });
-
   }
-  
 };
 
 //CHANGE PASSWORD
-exports.changePassword=async(req,res)=>{
-
-}
-
+exports.changePassword = async (req, res) => {};

@@ -12,7 +12,7 @@ const ratingAndReviewSchema = new mongoose.Schema({
   review: {
     type: String,
     required: true,
-  },
+  }
 });
 
 module.exports = mongoose.model("RatingAndReview", ratingAndReviewSchema);

@@ -9,7 +9,7 @@ exports.resetPasswordToken = async (req, res) => {
     const email = req.body.email;
 
     //check user for this email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email });
     //validate
     if (!user) {
       return res.json({
@@ -95,7 +95,7 @@ exports.resetPassword = async (req, res) => {
     await User.findOneAndUpdate(
       { token: token },
       { password: hashedPassword },
-      { new: true } 
+      { new: true }
     );
 
     //return response
