@@ -30,8 +30,15 @@ exports.createSection = async (req, res) => {
       {
         new: true,
       }
-    );
-    //DIY: USE POPULATE TO REPLACE SEC/SUB-SEC IN UPDATEDCOURSEDETAILS
+    ).populate({
+      path: "courseContent",
+      populate: {
+        path: "subSection",
+      },
+    })
+    .exec();
+
+  //  Done: //DIY: USE POPULATE TO REPLACE SEC/SUB-SEC IN UPDATEDCOURSEDETAILS
     return res.status(200).json({
       success: true,
       message: "Section created successfully",
@@ -41,43 +48,31 @@ exports.createSection = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "cannot create function.try again",
-      updatedCourseDetails,
+      error:error.message
     });
   }
 };
 
 //update section
 exports.updateSection = async (req, res) => {
-  try {
-    //fetch
-    const { sectionName, sectionId } = req.body;
-
-    //validate
-    if (!sectionName || !sectionId) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing Properties",
-      });
-    }
-
-    //updating data
-    const section = await Section.findByIdAndUpdate(
-      sectionId,
-      { sectionName }.sectionName,
-      { new: True }
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: "Section Updated Successfully",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "cannot update section, try again",
-      updatedCourseDetails,
-    });
-  }
+	try {
+		const { sectionName, sectionId } = req.body;
+		const section = await Section.findByIdAndUpdate(
+			sectionId,
+			{ sectionName },
+			{ new: true }
+		);
+		res.status(200).json({
+			success: true,
+			message: section,
+		});
+	} catch (error) {
+		console.error("Error updating section:", error);
+		res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
 };
 
 //delete a section

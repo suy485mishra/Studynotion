@@ -11,7 +11,7 @@ exports.createSubSection = async (req, res) => {
             const video  = req.files.videoFile;
             //validation
             if(!sectionId || !title || !timeDuration || !description || !video) {
-                return res.status(400).json({
+                return res.status(404).json({
                     success:false,
                     message:'All fields are required',
                 });
@@ -30,13 +30,13 @@ exports.createSubSection = async (req, res) => {
                                                         {$push:{
                                                             subSection:subSectionDetails._id,
                                                         }},
-                                                        {new:true});
+                                                        {new:true}).populate("subSection");//new val ko 
             //HW: log updated section here, after adding populate query
             //return response
             return res.status(200).json({
                 succcess:true,
                 message:'Sub Section Created Successfully',
-                updatedSection,
+               data: updatedSection,
             });
     }
     catch(error) {

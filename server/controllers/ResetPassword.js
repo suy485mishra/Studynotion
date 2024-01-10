@@ -14,12 +14,13 @@ exports.resetPasswordToken = async (req, res) => {
     if (!user) {
       return res.json({
         success: false,
-        message: "Your Email isnot registered",
+        message: `Your Email ${email} isnot registered`,
       });
     }
 
     //generate token
-    const token = crypto.randomUUID(); //inbuilt now
+    // const token = crypto.randomUUID(); //inbuilt now
+    const token = crypto.randomBytes(20).toString("hex");
 
     //update user by adding token & expiration time
     const updatedDetails = await User.findOneAndUpdate(
@@ -32,6 +33,7 @@ exports.resetPasswordToken = async (req, res) => {
       },
       { new: true } //isse updated details return hoga
     );
+    console.log("DETAILS", updatedDetails);
 
     //create URL--frontend ka
     const url = `https://localhost:3000/update-password/${token}`;

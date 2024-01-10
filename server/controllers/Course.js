@@ -1,13 +1,14 @@
 const Course = require("../models/Course");
-const Tag = require("../models/tags");
+const Category = require("../models/Category");
 const User = require("../models/User");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
 //create courseHandler func
 exports.createCourse = async (req, res) => {
   try {
+    
     //fetching info
-    const { courseName, courseDescription, whatYouWillLearn, price, tag } =
+    const { courseName, courseDescription, whatYouWillLearn, price, tag,category,status,instructions } =
       req.body;
 
     //get thumbnail
@@ -19,8 +20,9 @@ exports.createCourse = async (req, res) => {
       !courseDescription ||
       !whatYouWillLearn ||
       !price ||
-      !tag ||
+      !tag ||!category||
       !thumbnail
+
     ) {
       return res.status(400).json({
         success: false,
@@ -32,10 +34,11 @@ exports.createCourse = async (req, res) => {
     const userId = req.user.id;
 
     //instructor ki id nikalne k liye ye kia
-    const instructorDetails = await User.findById(userId);
-    console.log("Instructor details:", instructorDetails);
+    const instructorDetails = await User.findById(userId,{
+      accountType:'Instructor'
+    });
+    // console.log("Instructor details:", instructorDetails);
     //verify whether userId and instructordetails._id are same or not
-
 
     //validate
     if (!instructorDetails) {
@@ -46,8 +49,8 @@ exports.createCourse = async (req, res) => {
     }
 
     //fetch tagdetails
-    const tagDetails = await Tag.findById(tag);
-    if (!tagDetails) {
+    const categoryDetails = await Category.findById(category);
+    if (!categoryDetails) {
       return res.status(404).json({
         success: false,
         message: "TagDetails cannot be found",
@@ -59,15 +62,18 @@ exports.createCourse = async (req, res) => {
       thumbnail,
       process.env.FOLDER_NAME
     );
-
+console.log(thumbnailImage);
     //entry create for new course
     const newCourse = await Course.create({
       courseName,
       courseDescription,
       instructor: instructorDetails._id,
       whatYouWillLearn: whatYouWillLearn,
-      tag: tagDetails._id, //fetching from id, cam fetch frm {tag}too
+      category: categoryDetails._id,
+      tag:tag,
+      status:status, //fetching from id, cam fetch frm {tag}too
       price,
+      instructions:instructions,
       thumbnail: thumbnailImage.secure_url,
     });
 
@@ -82,8 +88,17 @@ exports.createCourse = async (req, res) => {
       { new: true }
     );
 
-    //update tag's schema
-    
+    //update category's schema
+    	// Add the new course to the Categories
+		await Category.findByIdAndUpdate(
+			{ _id: category },
+			{
+				$push: {
+					course: newCourse._id,
+				},
+			},
+			{ new: true }
+		);
 
     //return res
     return res.status(200).json({
@@ -102,7 +117,7 @@ exports.createCourse = async (req, res) => {
 };
 
 //getallcourses
-exports.showAllCourses = async (req, res) => {
+exports.getAllCourses = async (req, res) => {
   try {
     //fetch all ciurses
     const allCourses = await Course.find(
@@ -122,13 +137,16 @@ exports.showAllCourses = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "All Courses returned successfully",
-      data:allCourses,
+      data: allCourses,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
       message: "cannot fetch d=course data",
       error: error.message,
     });
   }
 };
+
+
+//getCourseDetails
