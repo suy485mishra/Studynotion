@@ -57,11 +57,12 @@ exports.showAllCategories = async (req, res) => {
 };
 exports.categoryPageDetails = async (req, res) => {
   try {
+    //fetch id
     const { categoryId } = req.body;
 
     // Get courses for the specified category
     const selectedCategory = await Category.findById(categoryId)
-      .populate("courses")
+      .populate("courses")//reference ni chahiyye
       .exec();
     console.log(selectedCategory);
     // Handle the case when the category is not found
@@ -95,10 +96,11 @@ exports.categoryPageDetails = async (req, res) => {
     const allCategories = await Category.find().populate("courses");
     const allCourses = allCategories.flatMap((category) => category.courses);
     const mostSellingCourses = allCourses
-      .sort((a, b) => b.sold - a.sold)
+      .sort((a, b) => b.sold - a.sold) //for priority
       .slice(0, 10);
 
     res.status(200).json({
+      success:true,
       selectedCourses: selectedCourses,
       differentCourses: differentCourses,
       mostSellingCourses: mostSellingCourses,

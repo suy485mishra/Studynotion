@@ -6,10 +6,17 @@ const { uploadImageToCloudinary } = require("../utils/imageUploader");
 //create courseHandler func
 exports.createCourse = async (req, res) => {
   try {
-    
     //fetching info
-    const { courseName, courseDescription, whatYouWillLearn, price, tag,category,status,instructions } =
-      req.body;
+    const {
+      courseName,
+      courseDescription,
+      whatYouWillLearn,
+      price,
+      tag,
+      category,
+      status,
+      instructions,
+    } = req.body;
 
     //get thumbnail
     const thumbnail = req.files.thumbnailImage;
@@ -20,9 +27,9 @@ exports.createCourse = async (req, res) => {
       !courseDescription ||
       !whatYouWillLearn ||
       !price ||
-      !tag ||!category||
+      !tag ||
+      !category ||
       !thumbnail
-
     ) {
       return res.status(400).json({
         success: false,
@@ -34,8 +41,8 @@ exports.createCourse = async (req, res) => {
     const userId = req.user.id;
 
     //instructor ki id nikalne k liye ye kia
-    const instructorDetails = await User.findById(userId,{
-      accountType:'Instructor'
+    const instructorDetails = await User.findById(userId, {
+      accountType: "Instructor",
     });
     // console.log("Instructor details:", instructorDetails);
     //verify whether userId and instructordetails._id are same or not
@@ -62,7 +69,7 @@ exports.createCourse = async (req, res) => {
       thumbnail,
       process.env.FOLDER_NAME
     );
-console.log(thumbnailImage);
+    console.log(thumbnailImage);
     //entry create for new course
     const newCourse = await Course.create({
       courseName,
@@ -70,10 +77,10 @@ console.log(thumbnailImage);
       instructor: instructorDetails._id,
       whatYouWillLearn: whatYouWillLearn,
       category: categoryDetails._id,
-      tag:tag,
-      status:status, //fetching from id, cam fetch frm {tag}too
+      tag: tag,
+      status: status, //fetching from id, cam fetch frm {tag}too
       price,
-      instructions:instructions,
+      instructions: instructions,
       thumbnail: thumbnailImage.secure_url,
     });
 
@@ -89,16 +96,16 @@ console.log(thumbnailImage);
     );
 
     //update category's schema
-    	// Add the new course to the Categories
-		await Category.findByIdAndUpdate(
-			{ _id: category },
-			{
-				$push: {
-					course: newCourse._id,
-				},
-			},
-			{ new: true }
-		);
+    // Add the new course to the Categories
+    await Category.findByIdAndUpdate(
+      { _id: category },
+      {
+        $push: {
+          course: newCourse._id,
+        },
+      },
+      { new: true }
+    );
 
     //return res
     return res.status(200).json({
@@ -148,5 +155,47 @@ exports.getAllCourses = async (req, res) => {
   }
 };
 
-
 //getCourseDetails
+exports.getCourseDetails = async (req, res) => {
+  try {
+    //get id
+    const { courseId } = req.body;
+    //find course details
+    const courseDetails = await Course.find({ _id: courseId })
+      .populate({
+        path: "instructor",
+        populate: {
+          path: "additionalDetails",
+        },
+      })
+      .populate("category")
+      .populate("ratingAndreviews")
+      .populate({
+        path: "courseContent",
+        populate: {
+          path: "subSection",
+        },
+      })
+      .exec();
+
+    //validation
+    if (!courseDetails) {
+      return res.status(400).json({
+        success: false,
+        message: `Could not find the course with ${courseId}`,
+      });
+    }
+    //return response
+    return res.status(200).json({
+      success: true,
+      message: "Course Details fetched successfully",
+      data: courseDetails,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
