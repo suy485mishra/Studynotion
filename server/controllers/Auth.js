@@ -66,7 +66,7 @@ exports.sendotp = async (req, res) => {
 };
 
 //signup
-exports.signUp = async (req, res) => {
+exports.signup = async (req, res) => {
   try {
     const {
       firstName,
