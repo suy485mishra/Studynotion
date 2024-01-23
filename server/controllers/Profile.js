@@ -2,48 +2,37 @@ const Profile = require("../models/Profile");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 const User = require("../models/User");
 
-exports.updateProfile = async (rew, res) => {
-  try {
-    //fetch data
-    const { dateOfBirth = "", about = "", contactNumber, gender } = req.body;
+exports.updateProfile = async (req, res) => {
+	try {
+		const { dateOfBirth = "", about = "", contactNumber } = req.body;
+		const id = req.user.id;
 
-    //fetch user id
-    const id = req.user.id;
-    //required validation
-    if (!contactNumber || !gender || !id) {
-      return res.status(400).json({
-        success: false,
-        error: "fill all fields",
-      });
-    }
+		// Find the profile by id
+		const userDetails = await User.findById(id);
+		const profile = await Profile.findById(userDetails.additionalDetails);
 
-    //finding profile
-      // Find the profile by id
-      const userDetails = await User.findById(id);
-      const profile = await Profile.findById(userDetails.additionalDetails);
-  
-      // Update the profile fields
-      profile.dateOfBirth = dateOfBirth;
-      profile.about = about;
-      profile.contactNumber = contactNumber;
+		// Update the profile fields
+		profile.dateOfBirth = dateOfBirth;
+		profile.about = about;
+		profile.contactNumber = contactNumber;
 
-      
-    // Save the updated profile
-    await profile.save();
+		// Save the updated profile
+		await profile.save();
 
-    //return response
-    return res.status(200).json({
-      success: true,
-      message: "Profile Updated Successfully",
-      profileDetails,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
+		return res.json({
+			success: true,
+			message: "Profile updated successfully",
+			profile,
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			success: false,
+			error: error.message,
+		});
+	}
 };
+
 
 //deleteAccount
 //Explore -> how can we schedule this deletion operation
@@ -92,6 +81,7 @@ exports.getAllUserDetails = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "User Data Fetched Successfully",
+      data:userDetails
     });
   } catch (error) {
     return res.status(500).json({

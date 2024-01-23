@@ -19,6 +19,7 @@ const PORT = process.env.PORT || 4000;
 //connect db
 database.connect();
 
+
 //middleware
 app.use(express.json());
 app.use(cookieParser());
@@ -36,7 +37,7 @@ app.use(
   })
 );
 
-//coonet to cloudinary
+//coonet to cloud
 cloudinaryConnect();
 
 //routes
