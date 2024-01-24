@@ -1,12 +1,15 @@
 import { FaArrowRight } from "react-icons/fa";
 import CTAButton from  '../components/core/HomePage/Button'
 import React from "react"
+import InstructorSection from '../components/core/HomePage/InstructorSection'
 import { Link } from "react-router-dom";
 import HighlightText from "../components/core/HomePage/HighlightText";
 import Banner from '../assets/Images/banner.mp4'
 import CodeBlocks from "../components/core/HomePage/CodeBlocks";
 import TimelineSection from "../components/core/HomePage/TimelineSection";
 import LearningLanguageSection from "../components/core/HomePage/LearningLanguageSection";
+import Footer from "../components/common/Footer";
+import ExploreMore from '../components/core/HomePage/ExploreMore'
 const Home = () => {
   return (
     <div>
@@ -121,7 +124,7 @@ const Home = () => {
                 codeColor={"text-yellow-25"}
             />
         </div>
-
+        <ExploreMore />
       </div>
 
       {/* Section-2(white background one) */}
@@ -174,6 +177,16 @@ const Home = () => {
 
         
       </div>
+
+      {/* Section-3 of homePage */}
+      <div className=" flex flex-col">
+      <InstructorSection/>
+      <h2 className='text-white text-center text-4xl font-semobold mt-10'>review from Other Learners</h2>
+{/* slider */}
+      </div>
+
+    {/* Section 3/FOOTER */}
+    <Footer/>
 
 
 
