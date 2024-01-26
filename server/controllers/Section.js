@@ -7,9 +7,9 @@ exports.createSection = async (req, res) => {
   //fetching data
   try {
     const { sectionName, courseId } = req.body;
-
+    console.log('Received Data:', req.body);
     //data validtaion
-    if (!sectionName || courseId) {
+    if (!sectionName || !courseId) {
       return res.status(400).json({
         success: false,
         message: "Missing Properties needed for creating section",
@@ -78,8 +78,9 @@ exports.updateSection = async (req, res) => {
 //delete a section
 exports.deleteSection = async (req, res) => {
   try {
-    const { sectionId } = req.params; //params mein hogi
+    const { sectionId,courseId } = req.body; //params mein hogi
     await Section.findByIdAndDelete(sectionId);
+    await Course.findByIdAndDelete(courseId);
     
     //do we need to delete the entry from the course schema ??
 

@@ -37,6 +37,7 @@ exports.updateProfile = async (req, res) => {
 //deleteAccount
 //Explore -> how can we schedule this deletion operation
 
+//SIRF STUDENT K LIYE H BRO
 exports.deleteAccount = async (req, res) => {
   try {
     //get id
@@ -50,7 +51,7 @@ exports.deleteAccount = async (req, res) => {
       });
     }
     //delete profile
-    await Profile.findByIdAndDelete({ _id: user.userDetails });
+    await Profile.findByIdAndDelete({ _id: user.additionalDetails });
     //TOOD: HW unenroll user form all enrolled courses
     //delete user
     await User.findByIdAndDelete({ _id: id });

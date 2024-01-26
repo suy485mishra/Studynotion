@@ -67,10 +67,20 @@ exports.isStudent = async (req, res, next) => {
 //isInstructor
 exports.isInstructor = async (req, res, next) => {
   try {
-    if (req.body.accountType !== "Instructor") {
+    const token = req.cookies.token; // Assuming you set the token in a cookie
+    if (!token) {
       return res.status(401).json({
         successs: false,
-        message: "This is a protected route for Instructors only",
+        message: 'Authentication token not provided',
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.accountType !== 'Instructor') {
+      return res.status(401).json({
+        successs: false,
+        message: 'This is a protected route for Instructors only',
       });
     }
 
@@ -78,7 +88,7 @@ exports.isInstructor = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({
       successs: false,
-      message: "User Role cannot be verified, please try again",
+      message: 'User Role cannot be verified, please try again',
     });
   }
 };
@@ -86,10 +96,20 @@ exports.isInstructor = async (req, res, next) => {
 //is admin
 exports.isAdmin = async (req, res, next) => {
   try {
-    if (req.body.accountType !== "Admin") {
+    const token = req.cookies.token; // Assuming you set the token in a cookie
+    if (!token) {
       return res.status(401).json({
         successs: false,
-        message: "This is a protected route for Admin only",
+        message: 'Authentication token not provided',
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.accountType !== 'Admin') {
+      return res.status(401).json({
+        successs: false,
+        message: 'This is a protected route for Admin only',
       });
     }
 
@@ -97,7 +117,7 @@ exports.isAdmin = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({
       successs: false,
-      message: "User Role cannot be verified, please try again",
+      message: 'User Role cannot be verified, please try again',
     });
   }
 };
