@@ -1,15 +1,65 @@
 import "./App.css";
-import { Route,Routes } from "react-router-dom";
-import Navbar from "./components/common/Navbar";
-import Home from './pages/Home'
+import {Route, Routes } from "react-router-dom";
+import Home from "./pages/Home"
+import Navbar from "./components/common/Navbar"
+import OpenRoute from "./components/core/auth/OpenRoute"
+import UpdatePassword from "./pages/UpdatePassword";
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyEmail from "./pages/VerifyEmail";
+
 function App() {
   return (
-    <div className="w-screen min-h-screen bg-richblack-900 flex flex-col font-inter">
+   <div className="w-screen min-h-screen bg-richblack-900 flex flex-col font-inter">
     <Navbar/>
     <Routes>
-<Route path="/"  element={<Home/>}/>
+      <Route path="/" element={<Home/>} />
+      <Route
+          path="signup"
+          element={
+            // openroute means jo logged in members na ho unko access hoga
+            <OpenRoute>
+              <Signup />
+            </OpenRoute>
+          }
+        />
+    <Route
+          path="login"
+          element={
+            <OpenRoute>
+              <Login />
+            </OpenRoute>
+          }
+        />
+        <Route
+          path="forgot-password"
+          element={
+            <OpenRoute>
+              <ForgotPassword/>
+            </OpenRoute>
+          }
+        />
+         <Route
+          path="update-password/:id"
+          element={
+            <OpenRoute>
+              <UpdatePassword/>
+            </OpenRoute>
+          }
+        />
+         <Route
+          path="verify-email"
+          element={
+            <OpenRoute>
+              <VerifyEmail/>
+            </OpenRoute>
+          }
+        />
+
     </Routes>
-  </div>
+
+   </div>
   );
 }
 

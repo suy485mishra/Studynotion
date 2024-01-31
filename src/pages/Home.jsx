@@ -19,11 +19,11 @@ const Home = () => {
         <Link to={"/signup"}>
           <div className="group mt-16 p-1 mx-auto rounded-full bg-richblack-800 font-bold text-richblack-200
           transition-all duration-200 hover:scale-75 w-fit ">{/*for rounded external div*/}
-            <div className="flex flex-row items-center rounded-full px-10 py-[5px]
-           transition-all duration-200 hover:scale-75 w-fit">{/*content k loye div*/}
-              <p>Become an Instructor</p>
-              <FaArrowRight />
-            </div>
+              <div className='flex flex-row items-center gap-2 rounded-full px-10 py-[5px]
+                transition-all duration-200  -z-10 group-hover:bg-richblack-900 '>
+                    <p>Become an Instructor</p>
+                    <FaArrowRight />
+                </div>
           </div>
         </Link>
 
