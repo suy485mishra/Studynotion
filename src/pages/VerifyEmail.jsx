@@ -61,8 +61,6 @@ function VerifyEmail() {
             A verification code has been sent to you. Enter the code below
           </p>
           <form onSubmit={handleVerifyAndSignup}>
-
-          {/* //react otp-input */}
             <OtpInput
               value={otp}
               onChange={setOtp}

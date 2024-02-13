@@ -20,7 +20,7 @@ const authSlice = createSlice({
       state.token = value.payload;
     },
   },
-}); 
+});
 
 export const { setSignupData, setLoading, setToken } = authSlice.actions;
 
