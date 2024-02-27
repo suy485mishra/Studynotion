@@ -2,7 +2,7 @@ import { RiEditBoxLine } from "react-icons/ri"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
-import { formattedDate } from "../../../utils/dataFormatter"
+import { formattedDate } from "../../../utils/dateFormatter"
 import IconBtn from "../../common/IconBtn"
 
 export default function MyProfile() {
